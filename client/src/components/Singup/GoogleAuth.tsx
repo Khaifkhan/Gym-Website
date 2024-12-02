@@ -10,7 +10,7 @@ interface GoogleAuthProps {
 }
 
 const GoogleAuth: React.FC<GoogleAuthProps> = ({ onSuccess, onFailure }) => {
-  const { setUser, setToken } = useUser(); // Access the UserContext
+  const { setUser, setToken } = useUser(); 
   const decodeJWT = (token: string): any => {
     try {
       const base64Url = token.split(".")[1];
