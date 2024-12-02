@@ -16,6 +16,7 @@ import logo from "../../assets/logo.png";
 import { toast, ToastContainer } from "react-toastify";
 import GoogleAuth from "./GoogleAuth";
 import axios from "axios";
+import { useUser } from "../../context/userContext";
 
 interface FormData {
   first_name: string;
@@ -46,6 +47,7 @@ const Registration: React.FC = () => {
   const Navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { setUser, setToken } = useUser();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -81,6 +83,16 @@ const Registration: React.FC = () => {
         photoURL: null,
       });
 
+      const tokenId = await user.getIdToken();
+
+      setUser({
+        Id: user.uid,
+        name: user.displayName || "No Name",
+        email: user.email || "No Email",
+        picture: user.photoURL || "",
+      });
+      setToken(tokenId);
+
       await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,
         first_name: formData.first_name,
@@ -88,6 +100,11 @@ const Registration: React.FC = () => {
         email: formData.email,
         photoURL: null,
       });
+
+      // Store the token in local storage
+      const expiryTime = Date.now() + 3600000; // 1 hour
+      localStorage.setItem("token", tokenId);
+      localStorage.setItem("tokenExpiry", expiryTime.toString());
 
       setIsSubmitting(false);
 
@@ -126,16 +143,17 @@ const Registration: React.FC = () => {
     }
   };
 
+
   const handleGoogleSuccess = async (response: any) => {
     console.log("Google login successful:", response);
     const user = response?.profileObj;
 
     if (user) {
       try {
-        const res = await axios.post("api/auth/google", {
+        const res = await axios.post("http://localhost:3000/auth/google", {
           token: response.credential,
         });
-        
+
         if (res.status === 200) {
           toast.success(`Welcome, ${user.name}!`);
         } else {

@@ -7,6 +7,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 import logo from "../../assets/logo.png"
 import "react-toastify/dist/ReactToastify.css";
+import { setAuthToken } from "./Auth";
+import { useUser } from "../../context/userContext";
 
 interface FormData {
   email: string;
@@ -22,6 +24,7 @@ const Login: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const { setUser } = useUser();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -55,16 +58,22 @@ const Login: React.FC = () => {
       );
 
       const user = userDetails.user;
-      const displayName = user.displayName;
-      const email = user.email;
+      const tokenId = await user.getIdToken();
 
-      const userCredentials = {
-        name: displayName || null,
-        email: email || null,
-      };
+      setUser({
+        Id: user.uid,
+        name: user.displayName || "No Name",
+        email: user.email || "No Email",
+        picture: user.photoURL || "",
+      });
 
-      localStorage.setItem("user", JSON.stringify(userCredentials));
 
+      setAuthToken(tokenId);
+
+      document.cookie = `token=${tokenId}; path=/; expires=${new Date(
+        Date.now() + 60 * 60 * 1000
+      ).toUTCString()}`;
+      
       setIsSubmitting(false);
 
       toast.success("Login successful!", {

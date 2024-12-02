@@ -26,3 +26,4 @@ const fetchGoogleFitData = async (token: string) => {
 };
 
 export default fetchGoogleFitData;
+

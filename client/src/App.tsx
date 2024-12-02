@@ -9,6 +9,7 @@ import StartWorkout from "./components/workouts/StartWorkout";
 import ProfilePage from "./components/Profile";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { UserProvider } from "./context/userContext";
+import Dashboard from "./components/Dashboard";
 
 const App = () => {
   const clientid = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -26,6 +27,7 @@ const App = () => {
             <Route path="/start-workout" element={<StartWorkout />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/workout" element={<StartWorkout />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </BrowserRouter>
       </UserProvider>

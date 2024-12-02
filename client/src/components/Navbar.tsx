@@ -3,8 +3,8 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { auth } from "../firebase";
-import { useUser } from "../context/userContext";
+import { auth } from "../firebase"; 
+import { useUser } from "../context/userContext"; 
 
 const capitalizeName = (name: string): string => {
   return name
@@ -16,17 +16,14 @@ const capitalizeName = (name: string): string => {
 const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [hasScrolled, setHasScrolled] = useState<boolean>(false);
-  const { user, setUser } = useUser();
+  const { user, setUser, setToken } = useUser();
 
   const flexBetween = "flex items-center justify-between";
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
-
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
-
-  const location = useLocation();
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     const loggedUser = localStorage.getItem("user");
@@ -44,33 +41,18 @@ const Navbar: React.FC = () => {
     };
 
     window.addEventListener("scroll", handleScroll);
-
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      const storedUser = localStorage.getItem("user");
-      const parsedUser = storedUser ? JSON.parse(storedUser) : null;
-      if (parsedUser !== user) {
-        setUser(parsedUser);
-      }
-    }, 1000);
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [user]);
-
   const handleLogout = (): void => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("jwt_token");
-    localStorage.removeItem("userData");
+    setToken(null);
     setUser(null);
     auth.signOut();
     closeMobileMenu();
+    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    localStorage.removeItem("user");
     navigate("/registration");
   };
 
@@ -90,8 +72,9 @@ const Navbar: React.FC = () => {
         <div className={`${flexBetween} mx-auto w-5/6`}>
           <div className={`${flexBetween} w-full gap-20`}>
             <NavLink to="/">
-              <img src={logo} alt="logo" />
+              <img src={logo} alt="logo" className="w-24" />
             </NavLink>
+
             <div className={`${flexBetween} w-full hidden md:flex`}>
               <div className={`${flexBetween} gap-8 text-[16px]`}>
                 <NavLink
@@ -135,6 +118,7 @@ const Navbar: React.FC = () => {
                   Start Workout
                 </NavLink>
               </div>
+
               <div className={`${flexBetween} gap-8`}>
                 {user ? (
                   <div className="flex items-center gap-4">
@@ -152,14 +136,12 @@ const Navbar: React.FC = () => {
                     </button>
                   </div>
                 ) : (
-                  <>
-                    <Link
-                      to="/registration"
-                      className="nav-link text-primary-500 px-10 py-2 rounded-md hover:bg-primary-500 hover:text-white transition-all duration-300"
-                    >
-                      Sign In
-                    </Link>
-                  </>
+                  <Link
+                    to="/registration"
+                    className="nav-link text-primary-500 px-10 py-2 rounded-md hover:bg-primary-500 hover:text-white transition-all duration-300"
+                  >
+                    Sign In
+                  </Link>
                 )}
                 <Link
                   to="/registration"

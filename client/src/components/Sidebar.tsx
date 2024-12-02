@@ -14,37 +14,39 @@ interface SidebarProps {
 
 const Sidebar = ({ onLogout }: SidebarProps) => {
   const itemStyles =
-    "flex items-center ps-3 py-3 gap-2 hover:bg-primary-300 rounded-md hover:cursor-pointer text-gray-800 hover:text-gray-950 hover:backdrop-blur-md hover:bg-opacity-30";
+    "flex items-center text-red-800 hover:text-red-950 hover:cursor-pointer gap-3 py-3 px-4 rounded-lg hover:bg-primary-300 text-gray-800 hover:bg-opacity-80 transition duration-300 ease-in-out";
 
   return (
-    <div className="fixed top-20 left-0 h-full bg-primary-300 backdrop-blur-md bg-opacity-30 border-b border-gray-100 shadow-md w-52 rounded-lg">
-      <div className="py-8 px-2">
-        <ul className="mt-2 space-y-5">
-          <li className={`${itemStyles}`}>
-            <FontAwesomeIcon icon={faTachometerAlt} />
-            <Link to="/dashboard">Dashboard</Link>
+    <div className="fixed top-20 left-0 h-full w-60 sm:w-72 md:w-60 bg-primary-300 bg-opacity-40 backdrop-blur-lg shadow-xl rounded-r-xl">
+      <div className="py-8 px-6 space-y-6">
+        <ul className="space-y-6">
+          <li className={itemStyles}>
+            <FontAwesomeIcon icon={faTachometerAlt} className="text-xl" />
+            <Link to="/dashboard" className="font-medium">
+              Dashboard
+            </Link>
           </li>
-          <li className={`${itemStyles}`}>
-            <FontAwesomeIcon icon={faUtensils} />
-            <span>Diet Plan</span>
+          <li className={itemStyles}>
+            <FontAwesomeIcon icon={faUtensils} className="text-xl" />
+            <span className="font-medium">Diet Plan</span>
           </li>
-          <li className={`${itemStyles}`}>
-            <FontAwesomeIcon icon={faBullseye} />
-            <span>Goals</span>
+          <li className={itemStyles}>
+            <FontAwesomeIcon icon={faBullseye} className="text-xl" />
+            <span className="font-medium">Goals</span>
           </li>
-          <li className={`${itemStyles}`}>
-            <FontAwesomeIcon icon={faCalendarDay} />
-            <span>Schedule</span>
+          <li className={itemStyles}>
+            <FontAwesomeIcon icon={faCalendarDay} className="text-xl" />
+            <span className="font-medium">Schedule</span>
           </li>
         </ul>
       </div>
-      <div className="absolute bottom-0 left-0 p-4">
+      <div className="p-6 ms-5 mt-36 bg-primary-400 rounded-t-lg">
         <button
           onClick={onLogout}
-          className="flex items-center gap-2 text-red-500 w-full"
+          className="flex items-center gap-3 text-red-500 hover:text-red-600 w-full justify-start transition duration-300 ease-in-out"
         >
-          <FontAwesomeIcon icon={faSignOutAlt} />
-          <span>Logout</span>
+          <FontAwesomeIcon icon={faSignOutAlt} className="text-xl" />
+          <span className="font-medium">Logout</span>
         </button>
       </div>
     </div>
